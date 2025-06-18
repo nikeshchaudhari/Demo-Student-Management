@@ -3,7 +3,10 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import {toast} from "react-toastify"
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const StudentRegister = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -11,13 +14,34 @@ const StudentRegister = () => {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate()
-  const submitHandle = (e) => {
+  const submitHandle = async(e) => {
     e.preventDefault();
+
+    try{
+    
+      await axios.post("http://localhost:8080/student/add-student",{
+        fullname,
+        email,
+        password,
+        address,
+        phone,
+      });
+
+
+  toast.success("Registered successfully!");
+navigate('/login')
+    }
+    catch(err){
+      toast.error("Something error..")
+      console.log(err);
+      
+
+    }
     console.log(fullname);
     console.log(email);
     console.log(address);
     console.log(phone);
-navigate('/')
+
   };
   return (
     <div className="w-full lg:w-full h-screen flex justify-center items-center register-wrapper ">
