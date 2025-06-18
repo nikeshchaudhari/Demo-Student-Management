@@ -1,19 +1,34 @@
-import React from "react";
-const StudentDetails = [
-  { id: 1, fullname: "Hari gautam", email: "hari@gmail.com", phone: "9800000",address:"ktm"},
-  {
-    id: 2,
-    fullname: "sagar gautam",
-    email: "hari@gmail.com",
-    phone: "9800000",
-    address:"ktm"
-  },
-  { id: 3, fullname: "mani gautam", email: "hari@gmail.com", phone: "9800000",address:"Birjung" },
-];
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+// const StudentDetails = [
+//   { id: 1, fullname: "Hari gautam", email: "hari@gmail.com", phone: "9800000",address:"ktm"},
+//   {
+//     id: 2,
+//     fullname: "sagar gautam",
+//     email: "hari@gmail.com",
+//     phone: "9800000",
+//     address:"ktm"
+//   },
+//   { id: 3, fullname: "mani gautam", email: "hari@gmail.com", phone: "9800000",address:"Birjung" },
+// ];
 const ViewList = () => {
-const deleteHandle=()=>{
-  
-}
+  const [students, setStudent] = useState([]);
+  useEffect(() => {
+    const viewData = async () => {
+      try {
+        const view = await axios.get(
+          "http://localhost:8080/student/view"
+        );
+        console.log(view.data);
+        setStudent(view.data);
+      } catch (err) {
+        console.error("Error Data....");
+      }
+    };
+    viewData();
+  }, []);
+
   return (
     <div className="bg-white max-w-4xl mx-auto p-6 shadow-lg rounded-lg mt-10">
       <h1 className="text-3xl font-semibold mb-6 text-center">Student List</h1>
@@ -33,20 +48,24 @@ const deleteHandle=()=>{
             <th className="p-3 border border-gray-300">Address</th>
             <th className="p-3 border border-gray-300">Phone</th>
             <th className="p-3 border border-gray-300">Action</th>
-
           </tr>
         </thead>
-        <tbody>
-          {StudentDetails.map((student) => (
-            <tr>
-              <td>{student.id}</td>
-              <td>{student.fullname}</td>
-              <td>{student.email}</td>
-              <td>{student.address}</td>
-              <td>{student.phone}</td>
+        <tbody className="text-center">
+          {students.map((s, i) => (
+            <tr key={i}>
+              <td>1</td>
+              <td>{s.fullName}</td>
+              <td>{s.email}</td>
+              <td>{s.address} </td>
+              <td>{s.phone} </td>
+            
               <td className="text-center ">
-                <button className="bg-green-600 mx-3 p-2 mb-2 rounded-sm text-white mt-2">Edit</button>
-                <button className="bg-red-600 mx-6 p-2 mb-2 rounded-sm text-white mt-2">Delete</button>
+                <button className="bg-green-600 mx-3 p-2 mb-2 rounded-sm text-white mt-2">
+                  Edit
+                </button>
+                <button className="bg-red-600 mx-6 p-2 mb-2 rounded-sm text-white mt-2">
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
