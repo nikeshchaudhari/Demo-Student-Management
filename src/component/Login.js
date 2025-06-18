@@ -1,21 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import {useState  } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentRegister from "./StudentRegister";
+import{toast} from "react-toastify"
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-  const submitHandle = (e) => {
+  const navigate = useNavigate();
+useEffect(()=>{
+const token = sessionStorage.getItem("token")
+if(token){
+  navigate("/login");
+}
+},[navigate])
+  const submitHandle = async (e) => {
     e.preventDefault();
     // console.log(email);
-      navigate("/studentregister");
-    
+    try {
+      const login = await axios.post("http://localhost:8080/student/login", {
+        email,
+        password,
+      });
+      const token = login.data.token;
+      if(token){
+
+      }
+      const fullName = login.data.fullName
+      sessionStorage.setItem("token",token)
+      sessionStorage.setItem("user",fullName)
+      toast.success("Login Sucessfully..")
+      navigate("/viewdetail");
+    } catch (err) {
+      toast.error("Somthing wrong")
+      console.log(err);
+      
+      
+    }
   };
 
   return (
@@ -26,7 +52,7 @@ const Login = () => {
             <h2 className="text-center mb-4 font-semibold text-[30px]">
               Login
             </h2>
-           
+
             <div className="mb-4">
               <TextField
                 fullWidth
@@ -35,10 +61,9 @@ const Login = () => {
                 type="email"
                 required
                 value={email}
-                onChange={(e)=>{
-                    setEmail(e.target.value)
+                onChange={(e) => {
+                  setEmail(e.target.value);
                 }}
-              
               />
             </div>
             <div className="mb-4">
@@ -47,13 +72,12 @@ const Login = () => {
                 label="Password"
                 type="password"
                 required
-                onChange={(e)=>{
-                    setPassword(e.target.value)
+                onChange={(e) => {
+                  setPassword(e.target.value);
                 }}
-               
               />
             </div>
-            
+
             <div className="mb-4 ">
               <Stack spacing={2} direction="row">
                 <Button
@@ -65,7 +89,7 @@ const Login = () => {
                     padding: "10px",
                   }}
                 >
-                  Register
+                  Login
                 </Button>
               </Stack>
             </div>
