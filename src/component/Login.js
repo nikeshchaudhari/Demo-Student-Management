@@ -6,41 +6,31 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentRegister from "./StudentRegister";
-import{toast} from "react-toastify"
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-useEffect(()=>{
-const token = sessionStorage.getItem("token")
-if(token){
-  navigate("/login");
-}
-},[navigate])
+
   const submitHandle = async (e) => {
     e.preventDefault();
     // console.log(email);
     try {
-      const login = await axios.post("http://localhost:8080/student/login", {
+      const login = await axios.post("http://localhost:8080/user/login", {
         email,
         password,
       });
-      const token = login.data.token;
-      if(token){
+      console.log(login);
+      
+      sessionStorage.setItem("token", login.data.token);
 
-      }
-      const fullName = login.data.fullName
-      sessionStorage.setItem("token",token)
-      sessionStorage.setItem("user",fullName)
-      toast.success("Login Sucessfully..")
+      toast.success("Login Sucessfully..");
       navigate("/viewdetail");
     } catch (err) {
-      toast.error("Somthing wrong")
+      toast.error("Somthing wrong");
       console.log(err);
-      
-      
     }
   };
 
