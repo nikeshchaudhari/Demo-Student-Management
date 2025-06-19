@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ViewList = () => {
   const [student, setStudent] = useState([]);
@@ -25,9 +26,20 @@ const ViewList = () => {
     };
     viewData();
   }, []);
-  const deleteData = (e) => {
-    e.preventDefault();
-    console.log("Delete Data...");
+  const deleteData = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/student/delete/${id}`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
+      toast.success("Student delete Successfull");
+      console.log("Delete Data...");
+      setStudent(oldData => oldData.filter(s=>s._id !== id));
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to delete..");
+    }
   };
 
   return (
@@ -54,7 +66,7 @@ const ViewList = () => {
         <tbody className="text-center">
           {student.map((s, i) => (
             <tr key={i}>
-              <td>{s.uId}</td>
+              <td>{i+1}</td>
               <td>{s.fullName}</td>
               <td>{s.address} </td>
               <td>{s.phone} </td>
@@ -65,7 +77,7 @@ const ViewList = () => {
                   Edit
                 </button>
                 <button
-                  onClick={deleteData}
+                  onClick={()=>deleteData(s._id)}
                   className="bg-red-600 hover:bg-red-800 mx-6 p-2 mb-2 rounded-lg text-white mt-2"
                 >
                   Delete
