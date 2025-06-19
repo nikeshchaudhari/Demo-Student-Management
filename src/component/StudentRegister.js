@@ -19,7 +19,7 @@ const StudentRegister = () => {
 
     try{
     
-      await axios.post("http://localhost:8080/student/add-student",{
+      await axios.post("http://localhost:8080/user/register",{
         fullname,
         email,
         password,
