@@ -27,7 +27,7 @@ const Login = () => {
       sessionStorage.setItem("token", login.data.token);
 
       toast.success("Login Sucessfully..");
-      navigate("/viewdetail");
+      navigate("/add-student");
     } catch (err) {
       toast.error("Somthing wrong");
       console.log(err);
