@@ -58,38 +58,101 @@ router.get("/viewstudent", async (req, res) => {
   }
 });
 
+// Find BY Id 
+
+router.get("/:id",async(req,res)=>{
+
+  try{
+    await jwt.verify(req.headers.authorization.split(" ")[1],process.env.JWT_KEY)
+
+   const data =  await Students.findById(req.params.id)
+
+   res.status(200).json({
+    data:data
+   })
+
+
+  }
+  catch(err){
+    console.log("error");
+    res.status(400).json({
+      error:err
+    })
+    
+
+  }
+})
 // Delete Data
 
-router.delete('/delete/:id',async(req,res)=>{
-try{
-   const user = await jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_KEY);
-//  console.log(user);
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const user = await jwt.verify(
+      req.headers.authorization.split(" ")[1],
+      process.env.JWT_KEY
+    );
+    //  console.log(user);
 
- const data = await Students.find({_id:req.params.id});
- console.log(data[0]);
- 
- if(data[0].uId != user._id){
-  return res.status(500).json({
-    msg:"Invalid user..."
-  })
- }
- console.log(data[0]);
- 
+    const data = await Students.find({ _id: req.params.id });
+    //  console.log(data[0]);
 
- const deleteData = await Students.findByIdAndDelete(req.params.id)
- res.status(200).json({
-  deleteData : deleteData
- })
-}
-catch(err){
-  console.log("error");
-  res.status(400).json({
-    error:err
-  })
-  
-}
- 
+    if (data[0].uId != user._id) {
+      return res.status(500).json({
+        msg: "Invalid user...",
+      });
+    }
+    //  console.log(data[0]);
 
-})
+    const deleteData = await Students.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      deleteData: deleteData,
+    });
+  } catch (err) {
+    console.log("error");
+    res.status(400).json({
+      error: err,
+    });
+  }
+});
+// Update
+router.put("/update/:id", async (req, res) => {
+  try {
+    const user = await jwt.verify(
+      req.headers.authorization.split(" ")[1],
+      process.env.JWT_KEY
+    );
+    console.log(user);
+
+    const data = await Students.find( {_id:req.params.id });
+    console.log(data[0]);
+
+    if (data[0].uId!= user._id) {
+      return res.status(500).json({
+        msg: "Invalid user..",
+      });
+    }
+    const updateUser = {
+      fullName: req.body.fullName,
+      address: req.body.address,
+      phone: req.body.phone,
+      course: req.body.course,
+    };
+    const updateData = await Students.findByIdAndUpdate(
+      req.params.id,
+      updateUser,
+      { new: true }
+    );
+    console.log(updateData);
+
+    res.status(200).json({
+      upDate: updateData,
+    });
+  } catch (err) {
+    console.log("error");
+    res.status(400).json({
+      error:err
+    })
+    
+  }
+});
 
 module.exports = router;
